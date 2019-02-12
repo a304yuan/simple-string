@@ -16,6 +16,13 @@ string * string_new(const char * s) {
     return str;
 }
 
+string * string_new_blank() {
+    string * str = malloc(sizeof(string));
+    str->data.raw[0] = '\0';
+    str->len = 0;
+    return str;
+}
+
 string * string_new_s(const char * s, size_t len) {
     string * str = malloc(sizeof(string));
     void * dest = NULL;

@@ -17,6 +17,7 @@ struct string {
 };
 
 extern string * string_new(const char * s);
+extern string * string_new_blank();
 extern string * string_new_s(const char * s, size_t len);
 extern void string_init(string * str, const char * s);
 extern void string_init_s(string * str, const char * s, size_t len);
