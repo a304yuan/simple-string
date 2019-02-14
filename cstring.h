@@ -10,6 +10,7 @@ typedef struct string string;
 
 struct string {
     size_t len;
+    size_t cap;
     union {
         void * ref;
         char raw[STRING_INLINE_LEN];
@@ -19,8 +20,8 @@ struct string {
 extern string * string_new(const char * s);
 extern string * string_new_blank();
 extern string * string_new_s(const char * s, size_t len);
-extern void string_init(string * str, const char * s);
-extern void string_init_s(string * str, const char * s, size_t len);
+//extern void string_init(string * str, const char * s);
+//extern void string_init_s(string * str, const char * s, size_t len);
 extern void string_free(string * str);
 extern char * string_get_raw(string * str);
 extern void string_append(string * str, const char * s);

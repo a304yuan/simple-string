@@ -5,10 +5,12 @@ string * string_new(const char * s) {
     size_t len = strlen(s);
     void * dest = NULL;
     if (len >= STRING_INLINE_LEN) {
-        str->data.ref = (dest = malloc(len));
+        str->data.ref = (dest = malloc(len + 1));
+        str->cap = len;
     }
     else {
         dest = str->data.raw;
+        str->cap = STRING_INLINE_LEN - 1;
     }
     memcpy(dest, s, len);
     *(char*)(dest+len) = '\0';
@@ -20,6 +22,7 @@ string * string_new_blank() {
     string * str = malloc(sizeof(string));
     str->data.raw[0] = '\0';
     str->len = 0;
+    str->cap = STRING_INLINE_LEN - 1;
     return str;
 }
 
@@ -27,17 +30,19 @@ string * string_new_s(const char * s, size_t len) {
     string * str = malloc(sizeof(string));
     void * dest = NULL;
     if (len >= STRING_INLINE_LEN) {
-        str->data.ref = (dest = malloc(len));
+        str->data.ref = (dest = malloc(len + 1));
+        str->cap = len;
     }
     else {
         dest = str->data.raw;
+        str->cap = STRING_INLINE_LEN - 1;
     }
     memcpy(dest, s, len);
     *(char*)(dest+len) = '\0';
     str->len = len;
     return str;
 }
-
+/*
 void string_init(string * str, const char * s) {
     size_t len = strlen(s);
     void * dest = NULL;
@@ -64,7 +69,7 @@ void string_init_s(string * str, const char * s, size_t len) {
     *(char*)(dest+len) = '\0';
     str->len = len;
 }
-
+*/
 void string_free(string * str) {
     if (str->len >= STRING_INLINE_LEN) {
         free(str->data.ref);
@@ -77,7 +82,7 @@ char * string_get_raw(string * str) {
         return str->data.ref;
     }
     else {
-        return str->data.raw + 0;
+        return str->data.raw;
     }
 }
 
@@ -89,18 +94,19 @@ void string_append(string * str, const char * s) {
     }
     else {
         if (str->len >= STRING_INLINE_LEN) {
-            void * ref = realloc(str->data.ref, new_len * 2);
+            void * ref = str->len > str->cap ? realloc(str->data.ref, new_len * 2 + 1) : str->data.ref;
             strcpy(ref + str->len, s);
             *(char*)(ref + new_len) = '\0';
             str->data.ref = ref;
         }
         else {
-            void * ref = malloc(new_len * 2);
+            void * ref = malloc(new_len * 2 + 1);
             memcpy(ref, str->data.raw, str->len);
             strcpy(ref + str->len, s);
             *(char*)(ref + new_len) = '\0';
             str->data.ref = ref;
         }
+        str->cap = new_len * 2;
     }
     str->len = new_len;
 }
@@ -113,18 +119,19 @@ void string_append_s(string * str, const char * s, size_t len) {
     }
     else {
         if (str->len >= STRING_INLINE_LEN) {
-            void * ref = realloc(str->data.ref, new_len * 2);
+            void * ref = str->len > str->cap ? realloc(str->data.ref, new_len * 2 + 1) : str->data.ref;
             strncpy(ref + str->len, s, len);
             *(char*)(ref + new_len) = '\0';
             str->data.ref = ref;
         }
         else {
-            void * ref = malloc(new_len * 2);
+            void * ref = malloc(new_len * 2 + 1);
             memcpy(ref, str->data.raw, str->len);
             strncpy(ref + str->len, s, len);
             *(char*)(ref + new_len) = '\0';
             str->data.ref = ref;
         }
+        str->cap = new_len * 2;
     }
     str->len = new_len;
 }
