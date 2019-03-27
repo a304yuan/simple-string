@@ -17,26 +17,28 @@ string * string_new_s(const char * s, size_t len) {
     return str;
 }
 
-string * string_append(const string * str, const char * s) {
-    size_t len = strlen(s) + str->len;
+void string_append(string ** str, const char * s) {
+    size_t len = strlen(s) + (*str)->len;
     string * newstr = malloc(sizeof(string) + len + 1);
-    strcpy(newstr->raw, str->raw);
-    strcpy(newstr->raw + str->len, s);
+    strcpy(newstr->raw, (*str)->raw);
+    strcpy(newstr->raw + (*str)->len, s);
     newstr->raw[len] = '\0';
     newstr->len = len;
-    return newstr;
+    free(*str);
+    *str = newstr;
 }
 
-string * string_append_s(const string * str, const char * s, size_t len) {
-    size_t nlen = strlen(s) + str->len;
+void string_append_s(string ** str, const char * s, size_t len) {
+    size_t nlen = strlen(s) + (*str)->len;
     string * newstr = malloc(sizeof(string) + nlen + 1);
-    strcpy(newstr->raw, str->raw);
-    strncpy(newstr->raw + str->len, s, len);
+    strcpy(newstr->raw, (*str)->raw);
+    strncpy(newstr->raw + (*str)->len, s, len);
     newstr->raw[nlen] = '\0';
     newstr->len = nlen;
-    return newstr;
+    free(*str);
+    *str = newstr;
 }
 
-string * string_concat(const string * str1, const string * str2) {
+void string_concat(string ** str1, const string * str2) {
     return string_append(str1, str2->raw);
 }

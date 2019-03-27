@@ -19,9 +19,9 @@ static inline void string_free(string * str) {
 static inline char * string_get_raw(string * str) {
     return str->raw;
 }
-extern string * string_append(const string * str, const char * s);
-extern string * string_append_s(const string * str, const char * s, size_t len);
-extern string * string_concat(const string * str1, const string * str2);
+extern void string_append(string ** str, const char * s);
+extern void string_append_s(string ** str, const char * s, size_t len);
+extern void string_concat(string ** str1, const string * str2);
 static inline size_t string_len(const string * str) {
     return str->len;
 }
